@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 use function Laravel\Prompts\table;
 
@@ -300,6 +301,52 @@ class KategoriController extends Controller
             }
         }
         return redirect('/');
+    }
+
+    public function export_excel() {
+
+        $barang = KategoriModel::select()->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kategori Kode');
+        $sheet->setCellValue('C1', 'Kategori Nama');
+
+        $sheet->getStyle('A1:C1')->getFont()->setBold(true);
+
+        $no = 1;
+        $baris = 2;
+        foreach ($barang as $key => $value) {
+            $sheet->setCellValue('A'.$baris, $no);
+            $sheet->setCellValue('B'.$baris, $value->kategori_kode);
+            $sheet->setCellValue('C'.$baris, $value->kategori_nama);
+            
+            $baris++;
+            $no++;
+        }
+
+        foreach (range('A', 'C') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Kategori');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Kategori '.date('Y-n-d Hi:is').'.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=@');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y Hi:is') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+        
+        $writer->save('php://output');
+        exit;
     }
 
 }
