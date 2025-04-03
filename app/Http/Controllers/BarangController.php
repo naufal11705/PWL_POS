@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangModel;
 use App\Models\KategoriModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -416,8 +417,20 @@ class BarangController extends Controller
         header('Last-Modified: ' . gmdate('D, d M Y Hi:is') . ' GMT');
         header('Cache-Control: cache, must-revalidate');
         header('Pragma: public');
-        
+
         $writer->save('php://output');
         exit;
+    }
+
+    public function export_pdf()
+    {
+        $barang = BarangModel::with('kategori')->get();
+
+        $pdf = Pdf::loadView('barang.export_pdf', ['barang' => $barang]);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption("isRemoteEnabled", true);
+        $pdf->render();
+        
+        return $pdf->stream('Data Barang '.date('Y-n-d Hi:is').'.pdf');
     }
 }
