@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use function Laravel\Prompts\table;
 
@@ -349,4 +350,15 @@ class KategoriController extends Controller
         exit;
     }
 
+    public function export_pdf()
+    {
+        $kategori = KategoriModel::select()->get();
+
+        $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption("isRemoteEnabled", true);
+        $pdf->render();
+        
+        return $pdf->stream('Data Kategori '.date('Y-n-d Hi:is').'.pdf');
+    }
 }

@@ -10,6 +10,7 @@ use App\Models\LevelModel;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -390,4 +391,15 @@ class UserController extends Controller
         exit;
     }
 
+    public function export_pdf()
+    {
+        $user = UserModel::with('level')->get();
+
+        $pdf = Pdf::loadView('user.export_pdf', ['user' => $user]);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption("isRemoteEnabled", true);
+        $pdf->render();
+        
+        return $pdf->stream('Data User '.date('Y-n-d Hi:is').'.pdf');
+    }
 }
