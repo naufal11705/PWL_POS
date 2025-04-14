@@ -31,3 +31,21 @@ Route::post('levels', [LevelController::class, 'store']);
 Route::get('levels/{level}', [LevelController::class, 'show']);
 Route::put('levels/{level}', [LevelController::class, 'update']);
 Route::delete('levels/{level}', [LevelController::class, 'destroy']);
+
+Route::get('barang', [\App\Http\Controllers\Api\BarangController::class, 'index']);
+Route::post('barang', [\App\Http\Controllers\Api\BarangController::class, 'store']);
+Route::get('barang/{barang}', [\App\Http\Controllers\Api\BarangController::class, 'show']);
+Route::put('barang/{barang}', [\App\Http\Controllers\Api\BarangController::class, 'update']);
+Route::delete('barang/{barang}', [\App\Http\Controllers\Api\BarangController::class, 'destroy']);
+
+Route::get('kategori', [\App\Http\Controllers\Api\KategoriController::class, 'index']);
+Route::post('kategori', [\App\Http\Controllers\Api\KategoriController::class, 'store']);
+Route::get('kategori/{kategori}', [\App\Http\Controllers\Api\KategoriController::class, 'show']);
+Route::put('kategori/{kategori}', [\App\Http\Controllers\Api\KategoriController::class, 'update']);
+Route::delete('kategori/{kategori}', [\App\Http\Controllers\Api\KategoriController::class, 'destroy']);
+
+Route::get('user', [\App\Http\Controllers\Api\UserController::class, 'index']);
+Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'store']);
+Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
+Route::put('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'update']);
+Route::delete('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'destroy']); 
